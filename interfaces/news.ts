@@ -5,6 +5,7 @@ export interface NewsArticleType {
   url: string
   author: string
   category: string[]
-  datePublished: string
+  published: string
   image: string
+  isSave?: boolean
 }

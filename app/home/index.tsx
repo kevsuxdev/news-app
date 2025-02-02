@@ -18,24 +18,31 @@ import CustomNewsArticle from '@/components/CustomNewsArticle'
 import HeaderButton from '@/components/HeaderButton'
 
 export default function HomePage() {
-  const { setAuth } = useAuth()
+  const { setAuth, user } = useAuth()
   const [news, setNews] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
-  const fetchNews = useCallback(async (option?: object) => {
-    try {
-      setLoading(true)
-      const response = await fetch(
-        `https://api.currentsapi.services/v1/latest-news?language=en&apiKey=${CURRENTS_API_KEY}&country=ph&page_number=5`
-      )
+  const fetchFilteredNews = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('saved_articles')
+      .select('*')
+      .eq('user_id', user.id)
 
-      const data = await response.json()
 
-      setNews(data.news)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
+    if (error) return Alert.alert('Error', 'Error fetching news')
+
+    const latestNewsApi = await fetch(
+      `https://api.currentsapi.services/v1/latest-news?language=en&apiKey=${CURRENTS_API_KEY}&country=ph`
+    )
+
+    const latestNewsData = await latestNewsApi.json()
+
+    if (latestNewsApi.status === 200) {
+      const latestArticles = data.map((article) => article.article_id)
+      const notSavedArticles = latestNewsData.news.filter((article: any) => !latestArticles.includes(article.id))
+      setNews(notSavedArticles)
     }
+
   }, [])
 
   useEffect(() => {
@@ -46,12 +53,11 @@ export default function HomePage() {
       }
     })
 
-    fetchNews()
-  }, [])
+    fetchFilteredNews()
+  }, [fetchFilteredNews, news])
 
   return (
     <View className='bg-white h-full'>
-     
       {loading ? (
         <ActivityIndicator
           size='large'
@@ -69,7 +75,7 @@ export default function HomePage() {
               description={item.description}
               url={item.url}
               image={item.image}
-              datePublished={item.published}
+              published={item.published}
               author={item.author}
               category={item.category}
             />

@@ -1,9 +1,20 @@
-import { View, Text, Image, Pressable, FlatList, Linking } from 'react-native'
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  FlatList,
+  Linking,
+  Alert,
+} from 'react-native'
 import React, { FC } from 'react'
 import { NewsArticleType } from '@/interfaces/news'
 import Feather from '@expo/vector-icons/Feather'
 import CallToAction from './CallToAction'
 import { format } from 'date-fns'
+import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/context/AuthContext'
+import FontAwesome from '@expo/vector-icons/FontAwesome'
 
 const CustomNewsArticle: FC<NewsArticleType> = ({
   id,
@@ -13,12 +24,44 @@ const CustomNewsArticle: FC<NewsArticleType> = ({
   author,
   category,
   image,
-  datePublished,
+  published,
+  isSave = false,
 }) => {
-  const isoDate = datePublished.replace(' ', 'T').replace(' +0000', '+00:00')
+  const { user } = useAuth()
+
+  const isoDate = published.replace(' ', 'T').replace(' +0000', '+00:00')
 
   const handleUrlVisit = () => {
-    Linking.openURL(url).catch(err => console.log(`Failed to load URL: ${err}`))
+    Linking.openURL(url).catch((err) =>
+      console.log(`Failed to load URL: ${err}`)
+    )
+  }
+
+  const handleSaveArticle = async (id: string) => {
+    const { error } = await supabase.from('saved_articles').insert({
+      user_id: user.id,
+      article_id: id,
+    })
+
+    if (error) {
+      return Alert.alert(
+        'Error',
+        `Error saving article. Please try again later.`
+      )
+    }
+
+    Alert.alert('Success', 'Article saved successfully.')
+  }
+
+  const handleUnsavedArticle = async (id: string) => {
+    const { error } = await supabase
+      .from('saved_articles')
+      .delete()
+      .eq('article_id', id)
+
+    if (error) return Alert.alert('Error', 'Error deleting this article. Please relogin your account')
+
+    Alert.alert('Success', `You deleted the article successfully.`)
   }
 
   return (
@@ -52,9 +95,33 @@ const CustomNewsArticle: FC<NewsArticleType> = ({
           )}
         />
       </View>
-      <View className='flex-row items-center justify-between gap-5'>
-        <CallToAction buttonStyle='flex-1' title='View Article' onPress={handleUrlVisit} />
-        <Feather name='bookmark' size={24} color='black' />
+      <View
+        className={`flex-row items-center justify-between gap-5 ${
+          isSave && 'flex-col'
+        }`}
+      >
+        <CallToAction
+          buttonStyle='flex-1'
+          title='View Article'
+          onPress={handleUrlVisit}
+        />
+
+        {!isSave && (
+          <Feather
+            name='bookmark'
+            size={24}
+            color='black'
+            onPress={() => handleSaveArticle(id)}
+          />
+        )}
+
+        {isSave && (
+          <CallToAction
+            title='Unsaved'
+            buttonStyle='!flex-1 bg-red-700'
+            onPress={() => handleUnsavedArticle(id)}
+          />
+        )}
       </View>
     </Pressable>
   )

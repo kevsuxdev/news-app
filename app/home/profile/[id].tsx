@@ -1,6 +1,6 @@
 import { View, Text, Alert, ActivityIndicator, Image } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
-import { router, useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams } from 'expo-router'
 import { useAuth } from '@/context/AuthContext'
 import images from '@/constant/images'
 import CallToAction from '@/components/CallToAction'

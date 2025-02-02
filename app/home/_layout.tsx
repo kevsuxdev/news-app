@@ -53,10 +53,10 @@ export default function HomeLayout() {
           />
         </Pressable>
       </View>
-      <View className='flex-row items-start gap-x-2 mb-5'>
+      <View className='flex-row items-start justify-end gap-x-2 mb-5'>
         <HeaderButton
-          title='Favorite'
-          onPress={() => router.replace('/home/favorites')}
+          title='Saved Articles'
+          onPress={() => router.replace('/home/save-article')}
         />
       </View>
       <Stack
@@ -65,8 +65,7 @@ export default function HomeLayout() {
         }}
       >
         <Stack.Screen name='index' options={{ headerShown: false }} />
-        <Stack.Screen name='trending' options={{ headerShown: false }} />
-        <Stack.Screen name='favorites' options={{ headerShown: false }} />
+        <Stack.Screen name='save-article' options={{ headerShown: false }} />
       </Stack>
     </SafeAreaView>
   )
