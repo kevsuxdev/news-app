@@ -4,31 +4,48 @@ import images from '@/constant/images'
 import { useAuth } from '@/context/AuthContext'
 import { supabase } from '@/lib/supabase'
 import { router, Stack } from 'expo-router'
+import { useEffect, useState } from 'react'
 import { Alert, Image, Pressable, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function HomeLayout() {
-  const { setAuth } = useAuth()
+  const { setAuth, user } = useAuth()
+  const [localUser, setLocalUser] = useState<any>(null)
 
-  const handleLogout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut()
+  const fetchUser = async () => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single()
 
-      if (error) return Alert.alert(error.message)
-      setAuth(null)
-      Alert.alert('Logout successful!')
-    } catch (error) {
-      console.error(error)
-    }
+    setLocalUser(data)
   }
+
+  useEffect(() => {
+    fetchUser()
+  }, [fetchUser])
 
   return (
     <SafeAreaView className='page-layout'>
       <View className='flex-row justify-between mb-3'>
         <HeadingLogo onPress={() => router.replace('/home')} />
-        <Pressable onPress={handleLogout}>
+        <Pressable
+          onPress={() => {
+            if (!user)
+              return Alert.alert('Please reload and relogin the application.')
+            router.replace({
+              pathname: '/home/profile/[id]',
+              params: { id: user.id },
+            })
+          }}
+        >
           <Image
-            source={images.getStartedImage}
+            source={
+              !localUser?.avatar
+                ? images.getStartedImage
+                : { uri: localUser?.avatar }
+            }
             className='h-10 w-10 rounded-full'
             height={10}
             width={10}
@@ -37,8 +54,10 @@ export default function HomeLayout() {
         </Pressable>
       </View>
       <View className='flex-row items-start gap-x-2 mb-5'>
-        <HeaderButton title='Trending' onPress={() => router.replace('/home/trending')} />
-        <HeaderButton title='Favorite' onPress={() => router.replace('/home/favorites')} />
+        <HeaderButton
+          title='Favorite'
+          onPress={() => router.replace('/home/favorites')}
+        />
       </View>
       <Stack
         screenOptions={{

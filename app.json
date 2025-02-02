@@ -9,13 +9,17 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "This app uses the photo library to let users select images."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/getting-start-image.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"]
     },
     "web": {
       "bundler": "metro",
@@ -47,7 +51,8 @@
             "./assets/fonts/Nunito-SemiBold.ttf"
           ]
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

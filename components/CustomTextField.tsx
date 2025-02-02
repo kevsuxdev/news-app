@@ -10,7 +10,9 @@ const CustomTextField: React.FC<CustomTextFieldType> = ({
   placeholder,
   keyboardType,
   containerStyle,
-  onChangeText
+  onChangeText,
+  defaultValue,
+  readOnly,
 }) => {
   return (
     <View className={`w-full gap-2 ${containerStyle}`}>
@@ -20,6 +22,8 @@ const CustomTextField: React.FC<CustomTextFieldType> = ({
         className={`text-black border border-black/50 px-3 rounded-lg font-nunito-medium ${fieldStyle}`}
         keyboardType={keyboardType || 'default'}
         onChangeText={onChangeText}
+        defaultValue={defaultValue}
+        readOnly={readOnly || false}
       />
     </View>
   )

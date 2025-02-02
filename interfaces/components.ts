@@ -14,7 +14,9 @@ export interface CustomTextFieldType {
   fieldStyle?: string
   containerStyle?: string
   keyboardType?: TextInputProps['keyboardType']
+  defaultValue?: string
   onChangeText?: (value: string) => void
+  readOnly?: boolean
 }
 
 export interface CustomPasswordFieldType {

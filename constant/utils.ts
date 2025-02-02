@@ -1,0 +1,4 @@
+export const SUPABASE_URL = 'https://ioedlinbywnzxuyaxtsf.supabase.co'
+export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlvZWRsaW5ieXduenh1eWF4dHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc3OTI1ODksImV4cCI6MjA1MzM2ODU4OX0.vYARBbxNAXQD1RQdMgaOoHDn6tFAS5yvy_nN1MO173A'
+export const NEWS_API_KEY='f64d890d42494278a1a16fb95223f797'
+export const CURRENTS_API_KEY='bAdL9VnnhGgtChiVccoMMNgH4cdkBye5CG6VasYvZ-LmKZh0'
